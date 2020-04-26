@@ -1,0 +1,15 @@
+h1{
+	font-family:caibri;
+	font-size:30px;
+	font-style:normal;
+	font-weight:bold;
+	color:grey;
+	text-decoration:underline;
+	text-align:center;
+}
+
+p{
+	font-family:verdana;
+	font-size:20px;
+	font-style:italic;
+}

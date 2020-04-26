@@ -1,0 +1,225 @@
+app.component.html
+
+<div class="container my-3">
+  <h3>Add Employee Table</h3>
+  <form class="form" #f1="ngForm" (ngSubmit)="addDetails()">
+    
+    ID:<input type="text" class="form-control col-sm-3" placeholder="Enter ID" [(ngModel)]="empId" name="empId">
+    Name:<input type="text" class="form-control col-sm-3" placeholder="Enter Name" [(ngModel)]="empName" name="empName">
+    Salary:<input type="text" class="form-control col-sm-3" placeholder="Enter salary" [(ngModel)]="salry" name="salry">
+    Deisgnation:<input type="text" class="form-control col-sm-3" placeholder="Enter designation" [(ngModel)]="desig" name="desig"><br>
+
+    <input type="submit" class="btn btn-info" value="Add Employee">
+
+  </form>
+</div><br>
+<div class="container">
+  <app-child (obj)="deleteTableRow($event)" [employeeList]="employeeInfo" (obj2)="updateTableRow($event)"></app-child>
+</div>
+
+
+
+<div class="container">
+  <h3>Update Table</h3>
+  <form class="form" #f1="ngForm" (ngSubmit)="updateTable()">
+
+    ID:<input type="text" class="form-control col-sm-3" value={{UempId}} [(ngModel)]="UempId" name="UempId">
+    Name:<input type="text" class="form-control col-sm-3" value={{UempName}} [(ngModel)]="UempName" name="UempName">
+    Salary:<input type="text" class="form-control col-sm-3" value={{Usalry}} [(ngModel)]="Usalry" name="Usalry">
+    Designation:<input type="text" class="form-control col-sm-3" value={{Udesignation}} [(ngModel)]="Udesignation" name="Udesignation">
+
+    <br>
+    <input type="submit" class="btn btn-info" value="Update Info">
+  </form>
+</div>
+
+***************************************************************
+
+app.component.ts
+
+import { Component } from '@angular/core';
+import{EmployeeInfo} from './EmployeeInfo';
+import { MyFileServiceService } from "./my-file-service.service";
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'LabAssign';
+  empId:string;
+  empName:string;
+  salry:string;
+  desig:string;
+  UempId:string;
+  UempName:string;
+  Usalry:string;
+  Udesignation:string;
+
+  name1:string
+
+  dataString:string="Creation of custom pipes to reverse string..."
+  
+  data2:EmployeeInfo;
+  /*pipeDataString:string="Use of Pipes";
+  data:number=1234;*/
+
+  constructor(private myfileservice:MyFileServiceService){
+
+  }
+
+  employeeInfo:EmployeeInfo[]=[
+    {employeeId:'101' , employeeName:'Arun',salary:'12000',department:'IT'},
+    {employeeId:'102',employeeName:'Mridul',salary:'15000',department:'HR'},
+    {employeeId:'103',employeeName:'Dhruv',salary:'13000',department:'IT'}
+  ]
+
+  addDetails(){
+    let emp=new EmployeeInfo();
+    emp.employeeId=this.empId;
+    emp.employeeName=this.empName;
+    emp.salary=this.salry;
+    emp.department=this.desig;
+    this.employeeInfo.push(emp);
+    
+  }
+
+  deleteTableRow(data:EmployeeInfo){
+    var index:number=0;
+    for(let emp1 of this.employeeInfo){
+      if(emp1.employeeId==data.employeeId){
+        break;
+      }
+      index++
+    }
+    this.employeeInfo.splice(index,1);
+  }
+
+  updateTableRow(data:EmployeeInfo){
+    this.UempId=data.employeeId;
+    this.UempName=data.employeeName;
+    this.Usalry=data.salary;
+    this.Udesignation=data.department;
+    this.data2=data;
+    }
+
+    updateTable(){
+      this.data2.employeeId=this.UempId;
+      this.data2.employeeName=this.UempName;
+      this.data2.salary=this.Usalry;
+      this.data2.department=this.Udesignation;
+    }
+
+   
+
+  }
+*************************************************************
+
+child.component.html
+
+
+
+<div>
+    <table class="table-bordered" >
+        <thead class="bg-warning">
+            <th>ID</th>
+            <th>Name</th>
+            <th>Salary</th>
+            <th>Department</th>
+            <th colspan="2" style="text-align: center;">Action</th>
+        </thead>
+        <tbody *ngFor="let emp of employeeList">
+            <td>{{emp.employeeId}}</td>
+            <td>{{emp.employeeName}}</td>
+            <td>{{emp.salary}}</td>
+            <td>{{emp.department}}</td>
+            <td><input type="submit" value="update" (click)=updateRow(emp)></td>
+            <td><input type="submit" value="delete" (click)=deleteRow(emp)></td>
+        </tbody>
+    </table>
+</div>
+**************************************************************
+
+child.component.ts
+
+import { Component, OnInit,Input,EventEmitter,Output } from '@angular/core';
+import { EmployeeInfo } from '../EmployeeInfo';
+
+@Component({
+  selector: 'app-child',
+  templateUrl: './child.component.html',
+  styleUrls: ['./child.component.css']
+})
+export class ChildComponent implements OnInit {
+  @Input() employeeList:EmployeeInfo[];
+  @Output() obj=new EventEmitter();
+  @Output() obj2=new EventEmitter();
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+  updateRow(emp:EmployeeInfo){
+
+    this.obj2.emit(emp);
+  }
+  deleteRow(emp:EmployeeInfo){
+    
+    this.obj.emit(emp);
+  }
+
+}
+*************************************************************************
+
+app.module.ts
+
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { ChildComponent } from './child/child.component';
+import{FormsModule, ReactiveFormsModule}from '@angular/forms';
+import { BackgroundColorDirective } from './background-color.directive'
+import{reverseString} from './reverseString.pipe';
+import{MyFileServiceService} from './my-file-service.service';
+import { ProductListComponent } from './product-list/product-list.component';
+import { ContactUsComponent } from './contact-us/contact-us.component';
+import{Routes,RouterModule} from '@angular/router';
+import { AddMovieComponent } from './add-movie/add-movie.component';
+import { SearchMovieComponent } from './search-movie/search-movie.component';
+import{MovieServiceService} from './movie-service.service'
+
+/*const routes:Routes=[
+  {path:'ProductList',component:ProductListComponent},
+  {path:'ProductList/:id',component:ProductListComponent},
+  {path:'ContactUs',component:ContactUsComponent}
+]*/
+const routes:Routes=[
+  {path:'AddMovie',component:AddMovieComponent},
+  {path:'SearchMovie',component:SearchMovieComponent}
+]
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    ChildComponent,
+    BackgroundColorDirective,
+    reverseString,
+    ProductListComponent,
+    ContactUsComponent,
+    AddMovieComponent,
+    SearchMovieComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    RouterModule.forRoot(routes)
+  ],
+  providers: [MovieServiceService],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }

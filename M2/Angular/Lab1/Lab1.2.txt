@@ -1,0 +1,103 @@
+app.component.ts
+
+<div class="container">
+
+  <h2>Angular Operation</h2>
+  <form class="form" (ngSubmit)="displayDetails()" method="GET">
+    ID: <input type="text" class="form-control col-sm-5" [(ngModel)]="id1" name="id1"><br>
+    Name: <input type="text" class="form-control col-sm-5" [(ngModel)]="name1" name="name1"><br>
+    Designation: <input type="text" class="form-control col-sm-5" [(ngModel)]="designation1" name="designation1"><br>
+    Salary: <input type="text" class="form-control col-sm-5" [(ngModel)]="salary1" name="salary1"><br>
+    <input type="submit" class="btn btn-info" value="Submit">
+  </form>
+</div><br><br>
+<div class="container" *ngIf="check2">
+  {{id1}}  {{name1}}  {{designation1}}  {{salary1}}
+</div>
+
+**************************************************************
+app.module.ts
+
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+*****************************************************************
+app.component.ts
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'MyFirstProject';
+  id:string;
+  name:string;
+  cost:string;
+  available:string;
+  category:string;
+  store1:string;
+  store2:string;
+  store3:string;
+  store4:string;
+  check:boolean=false;
+  text:string;
+
+  id1:number;
+  name1:number;
+  designation1:string;
+  salary1:number;
+  check2:boolean=false;
+  text2:string;
+
+
+
+
+
+
+
+
+  display(){
+    this.text=null;
+    this.check=true;
+    if(this.store1){
+      this.text=this.text+" Big-Bazar";
+    }
+    if(this.store2){
+      this.text=this.text+" D-Mart";
+    }
+    if(this.store3){
+      this.text=this.text+" Reliance";
+    }
+    if(this.store4){
+      this.text=this.text+" Megastore";
+    }
+  };
+
+  displayDetails(){
+
+    this.check2=true;
+
+  }
+}

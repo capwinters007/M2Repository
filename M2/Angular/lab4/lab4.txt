@@ -1,0 +1,173 @@
+app.component.html
+
+<head>
+  <style>
+    .table-position{
+      position: absolute;
+      right: 150px;
+      top: 120px;
+    }
+    .container-position{
+      position: absolute;
+      left: 50px;
+      top:90px;
+    }
+  </style>
+</head>
+<body>
+  <h1 align="center">Get Book Details</h1>
+<div class="container p-3 my-4 container-position" style="border-style: inset; border-radius: 50px; max-width: 525px;">
+  <h2>From to get Book Details</h2>
+  <br>
+  <br>
+
+  <form class="form-horizontal" method="get" (ngSubmit)="callService()" #f1="ngForm" >
+    Name:<input type="text" class="form-control col-sm-4" [(ngModel)]="filename" name="filename"><br>
+    <input type="radio" class="radio-inline" value="True" [(ngModel)]="display" name="display" (click)="checkAll()">Display All
+    <input type="radio" class="radio-inline" value="False" [(ngModel)]="display" name="display" (click)="check()">Display by ID<br>
+
+    <div *ngIf="condition">
+      Book ID:<input type="text" class="form-control col-sm-4" [(ngModel)]="id" name="id">
+    </div>
+    <br>
+    <input type="submit" class="btn btn-warning" value="Get Data">
+  
+
+  </form>
+  </div>
+
+  <div class="table-position" width="60%" *ngIf="f1.submitted">
+  <table  class="table">
+    <thead class="bg-info">
+        <th>ID</th>
+        <th>Title</th>
+        <th>Year</th>
+        <th>Author</th>
+    </thead>
+    <tbody class="bg-dark text-white" *ngFor="let book1 of bookList">
+        <td>{{book1.id}}</td>
+        <td>{{book1.title}}</td>
+        <td>{{book1.year}}</td>
+        <td>{{book1.author}}</td>
+    </tbody>
+  </table>
+  </div>
+</body>
+
+*****************************************************************
+
+app.component.ts
+
+callService(){
+
+    if(!this.condition){
+     this.bookList= this.filedisplay.displayAll(this.filename);
+    }
+    else{
+      this.bookList=this.filedisplay.display(this.filename,this.id);
+    }
+  }
+  
+}
+
+
+app.module.ts
+
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import{HttpClientModule} from '@angular/common/http';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import{FormsModule,ReactiveFormsModule} from '@angular/forms';
+import {FiledisplayService} from './filedisplay.service'
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule
+  ],
+  providers: [FiledisplayService],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+************************************************************
+
+Books.ts
+
+export class Books{
+    id:number;
+    title:string;
+    year:number;
+    author:string;
+}
+
+***********************************************************
+
+filedisplay.service.ts
+
+import { Injectable } from '@angular/core';
+import{HttpClient,HttpClientModule} from '@angular/common/http'
+import { Books } from './Books';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class FiledisplayService {
+
+  bookList:any=[];
+  bookList2:any=[];
+  book:any;
+  errorMsg:string;
+
+  constructor(private httpClient:HttpClient) { }
+
+  displayAll(filename:string):Books{
+    this.httpClient.get("assets/data/"+filename).subscribe(data =>
+      
+      {
+        
+       this.bookList=data;
+      },
+      (error)=>
+      {
+        this.errorMsg=error.message;
+        alert(this.errorMsg);
+      }
+
+      );
+      return this.bookList;
+  }
+  display(filename:string ,id:number):Books{
+    this.bookList2=[]
+    this.httpClient.get("assets/data/"+filename).subscribe(data =>
+      
+      {
+        this.bookList=data;
+        for(let index=0;index<this.bookList.length;index++)
+        {
+          let book2=this.bookList[index];
+          if(book2.id==id){
+            this.bookList2.push(book2);
+            break;
+          }
+        }
+      },
+      (error)=>
+      {
+        this.errorMsg=error.message;
+        alert(this.errorMsg);
+      }
+      
+      );
+      return this.bookList2;
+  }
+}
+*******************************************************************

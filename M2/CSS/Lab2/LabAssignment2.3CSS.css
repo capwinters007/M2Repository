@@ -1,0 +1,10 @@
+p.a{
+	text-transform:uppercase;
+	text-indent:20%;
+	color:#FF0000;
+}
+p.b{
+	text-transform:capitalize;
+	text-indent:10%;
+	color:#FA8072;
+}

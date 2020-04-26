@@ -1,0 +1,79 @@
+Mobile.ts
+
+
+export class Mobile{
+    mobileId:number;
+    mobileName: string;
+    mobileCost:number;
+
+
+    constructor(mobileId:number,mobileName:string,mobileCost:number){
+        this.mobileId=mobileId;
+        this.mobileName=mobileName;
+        this.mobileCost=mobileCost;
+    }
+
+    printMobileDetails(){
+        console.log("ID: "+this.mobileId);
+        console.log("Name: "+this.mobileName);
+        console.log("COst: "+this.mobileCost);
+    }
+}
+
+****************************************************************
+
+BasicPhone.ts
+
+import { Mobile } from "./Mobile";
+
+export class BasicPhone extends Mobile{
+    mobileType:string
+
+    constructor(id:number,name:string,cost:number,type:string){
+        super(id,name,cost);
+        this.mobileType=type;
+    }
+
+    getType(){
+        this.printMobileDetails();
+        console.log("Type: "+this.mobileType);
+    }
+}
+
+**********************************************************************
+
+SmartPhone.ts
+
+import { Mobile } from "./Mobile";
+
+
+export class SmartPhone extends Mobile{
+    mobileType:string;
+
+    constructor(id:number,name:string,cost:number,type:string){
+        super(id,name,cost);
+        this.mobileType=type;
+    }
+    getType(){
+        this.printMobileDetails();
+        console.log("Type: "+this.mobileType);
+    }
+}
+************************************************************************
+main.ts
+
+import { Mobile } from "./Mobile";
+
+
+export class SmartPhone extends Mobile{
+    mobileType:string;
+
+    constructor(id:number,name:string,cost:number,type:string){
+        super(id,name,cost);
+        this.mobileType=type;
+    }
+    getType(){
+        this.printMobileDetails();
+        console.log("Type: "+this.mobileType);
+    }
+}
